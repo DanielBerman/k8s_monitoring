@@ -1,0 +1,28 @@
+# https://github.com/pires/kubernetes-elasticsearch-cluster/issues/85
+apiVersion: extensions/v1beta1
+kind: DaemonSet
+metadata:
+  labels:
+    name: es-ds
+  name: es-ds
+spec:
+  selector:
+    matchLabels:
+      name: es-ds
+  template:
+    metadata:
+      labels:
+        name: es-ds
+    spec:
+      containers:
+      - name: es-ds
+        image: gcr.io/google-containers/startup-script:v1
+        imagePullPolicy: IfNotPresent
+        securityContext:
+          privileged: true
+        env:
+        - name: STARTUP_SCRIPT
+          value: |
+            #! /bin/bash
+            sysctl -w vm.max_map_count=262144
+            echo "done"
